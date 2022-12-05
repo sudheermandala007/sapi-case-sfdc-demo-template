@@ -1,0 +1,12 @@
+{
+"errors": [
+
+{
+"status": 502,
+"type":"HTTP:BAD_GATEWAY"  ,
+"description":"received an invalid response from the upstream server"  ,
+"correlationId": "c7ea8668-9396-4b39-8b64-6289e43c4915"
+
+}
+]
+}

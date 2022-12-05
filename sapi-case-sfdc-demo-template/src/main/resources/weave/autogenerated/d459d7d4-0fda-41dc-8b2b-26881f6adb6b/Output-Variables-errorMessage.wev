@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_d459d7d4_0fda_41dc_8b2b_26881f6adb6b_Output_Variables_errorMessage = {|
+  errorType: String | Null, 
+  Message: String | Null
+|}
+

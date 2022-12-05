@@ -1,0 +1,11 @@
+http:
+  host: "0.0.0.0"
+  port: "8081"
+        
+sfdc:
+  username: "sudheermandala2015@gmail.com"
+  password: "![I9L/sifIq46VQtweg5lrsQ==]"
+  token: "fSzD7u6nslJk2X93BXYBk9IK"
+  
+api:
+  id: "18329097"

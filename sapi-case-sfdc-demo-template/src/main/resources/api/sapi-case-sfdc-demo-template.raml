@@ -1,0 +1,46 @@
+#%RAML 1.0
+title: sapi-case-sfdc-demo-template
+description: This API is to retrieve case details
+version : v1
+protocols: [HTTPS,HTTP]
+
+uses:
+  Datatypes: /exchange_modules/8e660dd6-0580-40fe-86c3-b037eceaf3df/case-datatype/1.0.10/case-datatype.raml
+traits: 
+  errorResponse: !include /exchange_modules/8e660dd6-0580-40fe-86c3-b037eceaf3df/global-errorresponse-trait/1.0.3/global-errorresponse-trait.raml
+  clientIdRequired: !include /exchange_modules/8e660dd6-0580-40fe-86c3-b037eceaf3df/dcx-client-id-security-traits/1.0.0/dcx-client-id-security-traits.raml
+
+/cases:
+  /{id}:
+    get:
+      is: [clientIdRequired,errorResponse]
+      displayName: Retrieves case details based on id
+      description: Returns the consolidated details of the case using case id 
+      responses: 
+        200:
+          body: 
+            application/json:
+              type: Datatypes.case
+    patch:
+      is: [clientIdRequired,errorResponse]
+      displayName:  Updates case details based on id
+      body:
+        application/json:
+          type: Datatypes.case 
+      responses:
+        200:
+          body:
+            application/json:
+              type: Datatypes.case
+  post:
+    is: [clientIdRequired,errorResponse]
+    displayName: post case
+    body:
+      application/json:
+        type: Datatypes.case
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: Case created successfully

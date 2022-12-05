@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="445a6c2a-bbf7-451f-991d-51bcc14a87b1" file="properties\config-${mule.env}.yaml" />
+	<salesforce:sfdc-config name="sapi-case-sfdc-demo-template-salesforce-config" doc:name="Salesforce Config" doc:id="ef4cacad-be3d-442a-b269-70d330088da7" >
+		<salesforce:basic-connection username="${sfdc.username}" password="${secure::sfdc.password}" securityToken="${sfdc.token}" />
+	</salesforce:sfdc-config>
+	<http:listener-config name="sapi-case-sfdc-demo-template-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+	<secure-properties:config name="secure-properties-config" doc:name="Secure Properties Config" doc:id="dd220415-ec89-4746-b6b7-81ed701e9eb8" key="${key}" file="properties\config-${mule.env}.yaml">
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<global-property doc:name="Global Property" doc:id="28b69c47-5944-4846-825d-1f99f36779a0" name="key" value="1234567812345678" />
+	<global-property doc:name="Global Property" doc:id="eb0b163c-3880-4651-b7be-8f4814af190c" name="mule.env" value="dev" />
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="c845a36b-4ee1-4280-af50-b0aaef00784d" flowRef="sapi-case-sfdc-demo-template-main" />
+	<configuration doc:name="Configuration" doc:id="d1d4633f-ab9d-4472-87c1-1c02b20ff92d" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="5f98bbd3-721b-418b-afdc-3a6d7cb821cd" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="30a9a869-9be3-4489-a30c-26b861f68687" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="c9a4719d-5fde-4633-98fd-c6048a084ea2">
+				<ee:message>
+					<ee:set-payload resource="dwl/globalErrorMessage.dwl" />
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+	
+	
+</mule>

@@ -1,0 +1,16 @@
+%dw 2.0
+
+type auto_19a6e761_4b0a_40a2_b97c_052fec531605_Input_Payload = {
+  reason?: String, 
+  "supplied-name": String, 
+  subject: String, 
+  "supplied-company"?: String, 
+  origin: String, 
+  description?: String, 
+  id?: String, 
+  "type"?: String, 
+  priority?: String, 
+  status: String, 
+  _?: Any
+}
+

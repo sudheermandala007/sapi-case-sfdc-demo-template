@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+    xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+    xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd">
+	<flow name="getCase" doc:id="3da62a02-4918-4793-a0d7-4e8fc5f31acc" >
+        <until-successful maxRetries="1" doc:name="Until Successful" doc:id="2b56793a-60da-4cc9-9c37-a42945f9c34d" millisBetweenRetries="1000">
+            <try doc:name="Try" doc:id="a27c8a87-4579-4368-abd2-dd10cc714425">
+                <salesforce:query doc:name="get case from salesforce" doc:id="c4b04a8c-e679-45fb-986e-c3903dd4459c" config-ref="sapi-case-sfdc-demo-template-salesforce-config">
+            <salesforce:salesforce-query><![CDATA[SELECT Id, Reason, Description, Subject, SuppliedName, SuppliedCompany, Type, Status, Origin, Priority FROM Case where Id=':id']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"id" : attributes.uriParams.id
+}]]]></salesforce:parameters>
+        </salesforce:query>
+				<error-handler >
+                    <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="1793ef6c-8305-4fe0-ade7-bfa7ba539d2e" type="SALESFORCE:INVALID_INPUT, SALESFORCE:NOT_FOUND">
+						<ee:transform doc:name="Error message" doc:id="550d8189-8f10-4c38-8ef4-f40be3f248c6">
+                            <ee:message>
+                            </ee:message>
+                            <ee:variables>
+                                <ee:set-variable resource="dwl/errorMessage.dwl" variableName="errorMessage" />
+                            </ee:variables>
+                        </ee:transform>
+                
+</on-error-continue>
+                </error-handler>
+        </try>
+        </until-successful>
+        <choice doc:name="ErrorCheck?" doc:id="a1a390c2-e947-4796-88de-1a3f4bf2502d" >
+            <when expression="#[vars.errorMessage != null]">
+				<set-variable value="#[vars.errorMessage.code]" doc:name="httpStatus" doc:id="bb21f231-2517-4d3f-98cc-62bd14c58f90" variableName="httpStatus"/>
+				<logger level="INFO" doc:name="errorMessage" doc:id="28ddaf01-8348-4af9-9610-f4fd208bd6e9" message="#[vars.errorMessage]"/>
+                <set-payload value="#[vars.errorMessage]" doc:name="errorMessage passing " doc:id="f4f50dfe-1653-487a-bfe4-29b32e940ff9" />
+            
+</when>
+            <otherwise >
+				<set-variable value="200" doc:name="httpStatus " doc:id="50d96e13-254e-4f38-a8e7-de20ba6f294c" variableName="httpStatus " />
+				<ee:transform doc:name="salesforce-idm to mulesoft-idm" doc:id="81283543-6ec4-4f89-b45d-e47fc829f602">
+            <ee:message>
+                <ee:set-payload resource="dwl/get-case.dwl" />
+            </ee:message>
+        </ee:transform>
+
+</otherwise>
+        </choice>
+    </flow>
+    <flow name="patchCase" doc:id="d459d7d4-0fda-41dc-8b2b-26881f6adb6b" >
+        <ee:transform doc:name="map mulesoft-idm to salesforce-idm" doc:id="576bcd7a-88d9-4146-8aa7-99b8fb23bf2e" >
+            <ee:message >
+                <ee:set-payload resource="dwl/patch-case.dwl" />
+            </ee:message>
+        </ee:transform>
+        <until-successful maxRetries="1" doc:name="Until Successful" doc:id="d84a67e3-d794-4e91-8d9e-b09a0096fcb2" millisBetweenRetries="1000">
+			<try doc:name="Try" doc:id="56dd7816-33e7-4192-a136-a05bd4d6f4d0">
+            <salesforce:update doc:name="update case to salesforce" doc:id="f45dba04-27b1-4ba9-b4be-65607118d48b" config-ref="sapi-case-sfdc-demo-template-salesforce-config" type="Case" />
+            <error-handler>
+                <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="96b6ab4a-efec-4f5d-9b1c-9a1786f1147b" type="SALESFORCE:INVALID_INPUT, SALESFORCE:NOT_FOUND">
+                        <ee:transform doc:name="Error message" doc:id="43e15e02-e15a-4213-815d-385d1d9a2e1d">
+                            <ee:message>
+                            </ee:message>
+                            <ee:variables>
+                                <ee:set-variable resource="dwl/errorMessage.dwl" variableName="errorMessage" />
+                            </ee:variables>
+                        </ee:transform>
+                </on-error-continue>
+            </error-handler>
+</try>
+		</until-successful>
+		<choice doc:name="ErrorCheck?" doc:id="dad5cd72-e748-4de7-90e5-525e7be69c9e" >
+            <when expression="#[vars.errorMessage != null]">
+				<set-variable value="#[vars.errorMessage.code]" doc:name="httpStatus" doc:id="b562b6ae-6dc0-4303-a342-88fd487a1da1" variableName="httpStatus" />
+				<logger level="INFO" doc:name="errorMessage" doc:id="f090df05-5fcc-4226-aaf7-037c47259e6a" message="#[vars.errorMessage]"/>
+                <set-payload value="#[vars.errorMessage]" doc:name="errorMessage passing " doc:id="d56edf22-1ff3-4238-b591-a197c3470edb" />
+            
+</when>
+            <otherwise >
+                <set-variable value="201" doc:name="httpStatus " doc:id="13d19a9c-8982-4db4-9cd8-9e2cee563d14" variableName="httpStatus " />
+                <set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  message: "Successfully updated case"&#10;}]' doc:name="Response" doc:id="92ac4e1f-3d00-4982-a5b9-413f7dc5af66" />
+</otherwise>
+        </choice>
+    </flow>
+    <flow name="postCase" doc:id="dc1015e7-9fe3-4671-94c8-475cb7eaccb3" >
+        <ee:transform doc:name="map mulesoft-idm to saleforce-idm" doc:id="67014016-8f05-4b01-b4bb-e5f4672b3489" >
+            <ee:message >
+                <ee:set-payload resource="dwl/post-case.dwl" />
+            </ee:message>
+        </ee:transform>
+        <until-successful maxRetries="1" doc:name="Until Successful" doc:id="b2258797-6c18-4358-b813-2242bf866ae8" millisBetweenRetries="1000">
+			<try doc:name="Try" doc:id="2dcf8b88-6c2f-4d86-b4e9-c6234068e6b3">
+            <salesforce:create type="Case" doc:name="post case to salesforce" doc:id="9c565367-6338-4625-a78d-cbad5cfe962f" config-ref="sapi-case-sfdc-demo-template-salesforce-config" />
+                <error-handler>
+                <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a3487f00-7fea-4de0-b5e3-e81c617a5260" type="SALESFORCE:INVALID_INPUT, SALESFORCE:NOT_FOUND">
+                        <ee:transform doc:name="Error message" doc:id="964e961b-7cbb-4aeb-8306-34fdab290995">
+                            <ee:message>
+                            </ee:message>
+                            <ee:variables>
+                                <ee:set-variable resource="dwl/errorMessage.dwl" variableName="errorMessage" />
+                            </ee:variables>
+                        </ee:transform>
+                </on-error-continue>
+            </error-handler>
+        </try>
+		</until-successful>
+		<choice doc:name="ErrorCheck?" doc:id="7ec7bde6-9cd4-4544-ba91-3b28f160e4d6" >
+            <when expression="#[vars.errorMessage != null]">
+				<set-variable value="#[vars.errorMessage.code]" doc:name="httpStatus" doc:id="34000d8c-130e-4775-8244-999b1f1387d8" variableName="httpStatus" />
+				<logger level="INFO" doc:name="errorMessage" doc:id="12b43df8-cc04-44e1-9078-44495b018189" message="#[vars.errorMessage]"/>
+                <set-payload value="#[vars.errorMessage]" doc:name="errorMessage passing " doc:id="b400b8d8-0044-48d9-858e-cb4f432b2da1" />
+            
+</when>
+            <otherwise >
+                <set-variable value="201" doc:name="httpStatus " doc:id="4f768d9d-1406-4f03-b2b9-c48dc5ededaa" variableName="httpStatus " />
+                <set-payload value='#[output application/json&#10;---&#10;{&#10;  message: "Case created successfully in salesforce"&#10;}]' doc:name="Response" doc:id="ebb1c5f7-ed97-4466-8104-750569b97a2a" />
+            </otherwise>
+        </choice>
+    </flow>
+</mule>

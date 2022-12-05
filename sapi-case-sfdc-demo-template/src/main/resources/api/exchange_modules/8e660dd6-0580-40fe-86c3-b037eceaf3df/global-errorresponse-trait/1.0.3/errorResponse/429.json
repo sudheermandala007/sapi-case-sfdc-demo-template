@@ -1,0 +1,12 @@
+{
+"errors": [
+
+{
+"status": 429,
+"type":"HTTP:TOO_MANY_REQUESTS"  ,
+"description":"Too many requests in a given amount of time"  ,
+"correlationId": "c7ea8668-9396-4b39-8b64-6289e43c4915"
+
+}
+]
+}

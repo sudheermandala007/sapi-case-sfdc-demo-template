@@ -1,0 +1,36 @@
+#%RAML 1.0 DataType
+type: object
+properties:
+  id?:
+    type: string
+    description: "case id"
+  subject:
+    type: string
+    description: "Case subject"
+  description?:
+    type: string 
+    description: "description of the case"
+  reason?:
+    type: string
+    description: "reason"
+  supplied-name:
+    type: string
+    description: "Supplied Name"    
+  supplied-company?:
+    type: string 
+    description: "Supplied Company"
+  type?:
+    type: string
+    description: "Case Type"
+  status:
+    type: string
+    description: " Case Status"
+  origin:
+    type: string
+    description: "Origin of Case"
+  priority?:
+    type: string
+    description: "Priority of Case"
+
+examples:
+  case-example: !include ../examples/case-example.json

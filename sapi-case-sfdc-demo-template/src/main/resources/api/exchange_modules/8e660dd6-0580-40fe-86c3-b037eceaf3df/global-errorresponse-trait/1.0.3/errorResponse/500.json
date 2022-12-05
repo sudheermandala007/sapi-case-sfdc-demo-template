@@ -1,0 +1,12 @@
+{
+"errors": [
+
+{
+"status": 500,
+"type":"MULE:INTERNAL_SERVER"  ,
+"description":"Dataweave error"  ,
+"correlationId": "c7ea8668-9396-4b39-8b64-6289e43c4915"
+
+}
+]
+}

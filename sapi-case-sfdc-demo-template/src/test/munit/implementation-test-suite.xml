@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="implementation-test-suite-postCaseTest" doc:id="8348505f-ab41-4ad5-b2bc-0b6b226c8b6e" description="Test">
+		<munit:behavior>
+			<munit-tools:spy doc:name="map mulesoft-idm to saleforce-idm" doc:id="1fa31a39-2267-4134-8291-2b8f5e95806e" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="67014016-8f05-4b01-b4bb-e5f4672b3489" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert-equals doc:name="Assert equals to expected response" doc:id="66bc8cce-c01f-4c52-9a75-c1b66db3b1d6" actual="#[payload]" expected="#[output application/java --- readUrl('classpath://examples/post-expected-response.json')]"/>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit-tools:mock-when doc:name="Mock when " doc:id="6c0e5818-a746-4c1e-ad4f-f2df7026ea27" processor="salesforce:create">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9c565367-6338-4625-a78d-cbad5cfe962f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:name="Set Event Payload" doc:id="c0888aaa-9a97-4c9a-929a-f5137e8d6282" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://examples/post-case-request.json', 'application/json')]" mediaType="application/json" />
+				<munit:attributes value="
+" />
+				<munit:variables >
+					<munit:variable key="Id" value="5005g00000BbG45AAF" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="postCase" doc:id="6eb6c2bc-bc22-45a7-8990-d53f33fb575b" name="postCase"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call " doc:id="4025b40c-158e-4e54-ae42-73b3407b1a79" processor="salesforce:create">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9c565367-6338-4625-a78d-cbad5cfe962f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-patchCaseTest" doc:id="fff2302d-afef-4501-8a6f-198985f79c52" description="Test">
+		<munit:behavior >
+			<munit-tools:spy doc:name="map mulesoft-idm to salesforce-idm" doc:id="0ced2beb-89c6-4efd-8630-0e69c2b04504" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="576bcd7a-88d9-4146-8aa7-99b8fb23bf2e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="b14122b5-582d-495f-ab31-c9ea72d48fa9" />
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c6272735-f225-46c5-8933-b394da6e4ac6" processor="salesforce:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f45dba04-27b1-4ba9-b4be-65607118d48b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event Payload" doc:id="985dcc5f-910a-4b97-927f-d90956817b62" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://examples/patch-case-request.json', 'application/json')]" mediaType="application/json" />
+				<munit:attributes value='#[{uriParams:{id:"5005g00000BbG45AAF"}}]' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="patchCase" doc:id="02a9832d-1947-4df1-ae07-d083c7feef82" name="patchCase"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="f8dc64d8-f859-4b4f-9dce-c861a8548df7" processor="salesforce:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f45dba04-27b1-4ba9-b4be-65607118d48b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-getCaseTest" doc:id="d5aec830-53b3-42a7-afd6-d5da8da25e46" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1e6073d1-65eb-4cdd-8820-7095b7f86723" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c4b04a8c-e679-45fb-986e-c3903dd4459c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://examples/get-case-response.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="salesforce-idm to mulesoft-idm" doc:id="4b08bab1-ec00-4350-ad4d-ee62dd918a76" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="81283543-6ec4-4f89-b45d-e47fc829f602" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:after-call>
+					<munit-tools:assert doc:name="Assert expression" doc:id="21c230ba-6a21-4af0-ba8c-7f81e7d4e076" />
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="3668f01e-5a14-4fec-8091-54fc4f857659" >
+				<munit:payload value="&#10;" />
+				<munit:attributes value='#[{uriParams:{id:"5005g00000BbG45AAF"}}]' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="getCase" doc:id="2d3066ab-0aec-4966-a286-e7e191b33fd4" name="getCase"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="925d978e-06bd-475b-a024-819a9366dd57" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c4b04a8c-e679-45fb-986e-c3903dd4459c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suiteTest-failure-scenario1" doc:id="63caac83-ccb3-4c6f-abe8-3ba15763db84">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="SALESFORCE:INVALID_INPUT" doc:id="eea0df79-7595-48a8-bf95-5ef2a187b299" processor="salesforce:create">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9c565367-6338-4625-a78d-cbad5cfe962f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:INVALID_INPUT" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event payload" doc:id="6bc4416d-bdb1-44e8-9131-9decd4a37fbf" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://examples/post-case-request.json', 'application/json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="postCase" doc:id="657386a8-d3a4-4d43-b855-55e650a17371" name="postCase"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="ad30aada-9d0b-46d6-af20-c5f6be8db1e7" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="67014016-8f05-4b01-b4bb-e5f4672b3489" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suiteTest-failure-scenario2" doc:id="c57c3f4e-ba20-4e2a-8b42-473378b1ce43" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="SALESFORCE:NOT_FOUND" doc:id="f8f16306-6f7d-4c7a-ab10-8d4d7f4f4e6c" processor="salesforce:update" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f45dba04-27b1-4ba9-b4be-65607118d48b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event payload" doc:id="bf6215e2-b2ef-4034-a9b0-71c1fe97962c" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://examples/patch-case-request.json', 'application/json')]" mediaType="application/json" />
+				<munit:attributes value='#[{uriParams:{id:"5005g00000BbG45AAF"}}]' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="patchCase" doc:id="a63efe18-79c2-4ca6-9fc4-6009789bba8a" name="patchCase" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="56053e82-0344-4516-b136-829e7102c42f" processor="ee:transform" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="576bcd7a-88d9-4146-8aa7-99b8fb23bf2e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

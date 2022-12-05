@@ -1,0 +1,15 @@
+{
+    "error": {
+        "description": "Invalid username, password, security token; or user locked out.",
+        "errorMessage": null,
+        "errorType": {
+            "identifier": "INVALID_INPUT",
+            "parentErrorType": {
+                "identifier": "ANY",
+                "parentErrorType": null,
+                "namespace": "MULE"
+            },
+            "namespace": "SALESFORCE"
+        }
+    }
+}
